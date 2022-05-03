@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.0.0/dist/tf.min.js"></script>
+    <script>
+      // Empezamos con 0 tensores.
+      console.log("Inicio", tf.memory().numTensors, tf.memory().numBytes);
+
+      //Creamos 4 tensores
+      const tensor1 = tf.tensor([1, 2, 3]),
+        tensor2 = tf.tensor([1, 2, 3]),
+        tensor3 = tf.tensor([1, 2, 3]),
+        tensor4 = tf.tensor([1, 2, 3]);
+
+      console.log(
+        "Antes de tidy",
+        tf.memory().numTensors,
+        tf.memory().numBytes
+      );
+
+      //Creamos otros 4 tensores dentro de tidy.
+
+      let keeper, chaser, seeker, beater;
+
+      // Asignamos los valores de los tensores dentro de tidy.
+      tf.tidy(() => {
+        keeper = tf.tensor([1, 2, 3]);
+        chaser = tf.tensor([1, 2, 3]);
+        seeker = tf.tensor([1, 2, 3]);
+        beater = tf.tensor([1, 2, 3]);
+
+        // Tenemos 4 tensores en memoria.
+        console.log(
+          "Dentro de tidy",
+          tf.memory().numTensors,
+          tf.memory().numBytes
+        );
+
+        // Protegemos un tensor.
+        tf.keep(keeper);
+        // Retornamos un tensor.
+        return chaser;
+      });
+
+      // Se limpian 2 tensores.
+      console.log(
+        "Despues de tidy",
+        tf.memory().numTensors,
+        tf.memory().numBytes
+      );
+
+      keeper.dispose();
+      chaser.dispose();
+
+      console.log(
+        "Despues de limpiar 2 tensores",
+        tf.memory().numTensors,
+        tf.memory().numBytes
+      );
+
+      tf.dispose([tensor1, tensor2, tensor3, tensor4]);
+
+      // Volvemos a 0.
+      console.log("Final", tf.memory().numTensors, tf.memory().numBytes);
+    </script>
+  </head>
+  <body>
+    <h1>Inspecciona el codigo!</h1>
+  </body>
+</html>
